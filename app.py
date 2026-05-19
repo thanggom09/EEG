@@ -8,14 +8,9 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import tensorflow as tf
 
-from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from openai import OpenAI
 
-
-# =========================
-# CONFIG
-# =========================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "eeg_cnn_model.h5")
@@ -28,19 +23,19 @@ st.set_page_config(
 st.title("EEG Seizure Detection with CNN + GPT-4V")
 
 
-# =========================
-# LOAD MODEL
-# =========================
-
 @st.cache_resource
 def load_cnn_model():
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
-            f"Không tìm thấy file model tại:\n{MODEL_PATH}\n\n"
-            "Hãy kiểm tra lại thư mục model/eeg_cnn_model.h5"
+            f"Không tìm thấy file model tại:\n{MODEL_PATH}"
         )
 
-    cnn_model = load_model(MODEL_PATH, compile=False)
+    cnn_model = tf.keras.models.load_model(
+        MODEL_PATH,
+        compile=False,
+        safe_mode=False
+    )
+
     return cnn_model
 
 
