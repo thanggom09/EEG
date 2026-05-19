@@ -24,7 +24,7 @@ st.title("EEG Seizure Detection with CNN + GPT-4V")
 
 @st.cache_resource
 def load_cnn():
-    model = load_model(MODEL_PATH, compile=False)
+    model = load_model(model/eeg_cnn_model.h5, compile=False)
     return model
 
 def preprocess(df):
