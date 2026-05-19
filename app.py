@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import tensorflow as tf
 
+from tensorflow.keras.layers import Dense
 from sklearn.preprocessing import StandardScaler
 from openai import OpenAI
 
@@ -15,12 +16,19 @@ from openai import OpenAI
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "eeg_cnn_model.h5")
 
+
 st.set_page_config(
     page_title="EEG Seizure Detection",
     layout="wide"
 )
 
 st.title("EEG Seizure Detection with CNN + GPT-4V")
+
+
+class CustomDense(Dense):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("quantization_config", None)
+        super().__init__(*args, **kwargs)
 
 
 @st.cache_resource
@@ -33,7 +41,10 @@ def load_cnn_model():
     cnn_model = tf.keras.models.load_model(
         MODEL_PATH,
         compile=False,
-        safe_mode=False
+        safe_mode=False,
+        custom_objects={
+            "Dense": CustomDense
+        }
     )
 
     return cnn_model
